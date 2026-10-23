@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 基线 / 指纹 / 签名产物（属于运行时数据，不进仓库）
+*.fp.json
+*.lock.json
+*.anchor.json
+*.sig.json
+audit.jsonl
+*.jsonl
+
+# 密钥绝不入库
+*.key
+*.pem
+!examples/*.example.json
+
+.DS_Store
+Thumbs.db

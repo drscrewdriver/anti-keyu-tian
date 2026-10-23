@@ -1,0 +1,46 @@
+{
+  "schema": "fpenv-policy/v1",
+  "name": "goku-train-env",
+  "fail_on": "high",
+  "require_signed": true,
+  "key_env": "FPENV_KEY",
+  "scopes": [
+    {
+      "label": "framework-libs",
+      "roots": ["/usr/lib/python3.11/site-packages", "/usr/local/lib/python3.11/dist-packages"],
+      "baseline": "/var/lib/fpenv/baselines/framework-libs.fp.json",
+      "hash_mode": "content",
+      "excludes": ["__pycache__", "*.pyc", "*.pyo", ".git", "*.log"],
+      "comment": "案件核心：被 sudo 替换的就是这里的 torch。必须是 content 模式"
+    },
+    {
+      "label": "launcher-and-hooks",
+      "roots": ["/opt/train/bin", "/opt/train/hooks", "/etc/systemd/system"],
+      "baseline": "/var/lib/fpenv/baselines/launcher-and-hooks.fp.json",
+      "hash_mode": "content",
+      "excludes": ["*.log"],
+      "comment": "启动脚本/init 钩子：kill.py 写入 init.py 的位置"
+    },
+    {
+      "label": "kernel-and-boot",
+      "roots": ["/boot", "/lib/modules", "/etc/modprobe.d", "/etc/sysctl.d"],
+      "baseline": "/var/lib/fpenv/baselines/kernel-and-boot.fp.json",
+      "hash_mode": "meta",
+      "comment": "内核与启动参数：影响 ctime 语义与隔离能力的根基"
+    },
+    {
+      "label": "access-control",
+      "roots": ["/etc/ssh", "/etc/sudoers.d", "/etc/pam.d", "/root/.ssh"],
+      "baseline": "/var/lib/fpenv/baselines/access-control.fp.json",
+      "hash_mode": "content",
+      "comment": "谁能登录、谁能 sudo。加上一个 authorized_keys 就等于永久后门"
+    },
+    {
+      "label": "scheduler-env",
+      "roots": ["/etc/environment", "/etc/profile.d", "/etc/ld.so.conf.d"],
+      "baseline": "/var/lib/fpenv/baselines/scheduler-env.fp.json",
+      "hash_mode": "meta",
+      "comment": "环境变量与动态库搜索路径：LD_PRELOAD 注入的入口"
+    }
+  ]
+}
